@@ -1,0 +1,107 @@
+
+/*
+1. Write a class BankAccount with methods deposit and withdraw, and a read-only property balance.
+*/
+class BankAccount {
+	private var _balance = 0
+	
+	def balance = _balance
+	
+	def deposit(money: Int) = _balance += money
+	def withdraw(money: Int) = if(money < _balance) _balance -= money
+}
+
+
+
+
+/*
+2. Write an object Conversions with methods inchestoFeet, milestoKms and poundsToKilos and invoke its methods from a class of your choice
+*/ 
+
+object Conversions {
+	def inchestoFeet(inches: Double) = inches * 0.083
+	
+	def milesToKms(miles: Double) = miles * 1.60934 
+	
+	def poundsToKilos(miles: Double) = miles * 0.4535
+}
+
+class UnitConversion(val conversionFactor: Double) {
+	private def convert(value: Double) = value * conversionFactor
+	
+	def apply(value: Double) = convert(value)
+}
+
+object inchestoFeet extends UnitConversion(0.083) {}
+object MilesToKms extends UnitConversion(1.60934) {}
+object poundsToKilos extends UnitConversion(0.4535) {} 
+
+
+
+
+/*
+3. Extend the following BankAccount class to a CheckingAccount class that charges $1 for every deposit and withdrawal
+*/ 
+
+class BankAccount(initialBalance: Double) {
+    private var balance = initialBalance
+    def deposit(amount: Double) = { balance += amount; balance }
+    def withdraw(amount: Double) = { balance -= amount; balance }
+}
+class CheckingAccount(initialBalance: Double) extends BankAccount(initialBalance) {
+    override def deposit(amount: Double) = {super.deposit(amount - 1) }
+    override def withdraw(amount: Double) = { super.withdraw(amount + 1) }
+}
+object CheckingAccountTester extends App {
+    var account = new CheckingAccount(1000)
+    account.deposit(100)
+    account.withdraw(100)
+    assert(account.withdraw(997) == 0)
+}
+
+
+
+
+
+
+/*
+4.  Write a Scala program to get the largest element of an array using reduceLeft?
+*/
+val randArray = Seq.fill(5)(Random.nextInt(20))
+val max = randArray.reduceLeft((x,y) => if(x>y) x else y)
+
+
+
+
+
+
+/*
+5. Implement the factorial function using to and reduceLeft, without a loop or recursion.
+*/
+def reduceFactorial(value: Int) = {
+    if(value > 0) {
+        (1 to value).reduceLeft(_ * _)
+    }
+    else {
+        -1 * (1 to math.abs(value)).reduceLeft(_ * _)
+    }
+}
+
+
+
+
+/*
+6. Write a Scala code which reverses the lines of a file (makes the first line as the last one, and so on)
+*/
+
+import io.Source
+val source = Source.fromFile("file.scala")   /* replace file with <file_name> */
+val lines = source.getLines.toArray
+val revLines = lines.reverse
+
+
+
+/*
+7. Write a Scala code which reads a file and prints all words with more than 10 characters. Can you write all of it in a single line?
+*/
+val longWords = for(a <- io.Source.fromFile("file.scala").mkString.split(' ') if a.length >= 10) yield a  /* replace file with <file_name> */
